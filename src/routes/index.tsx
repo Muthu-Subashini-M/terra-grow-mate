@@ -32,7 +32,7 @@ function Index() {
   const [error, setError] = useState("");
   const [phNote, setPhNote] = useState("");
   const result = analyzeSoil(analyzed);
-  const changed = ph !== String(analyzed.ph) || texture !== analyzed.texture || nitrogen !== analyzed.nitrogen || water !== analyzed.water;
+  const changed = Number(ph) !== analyzed.ph || texture !== analyzed.texture || nitrogen !== analyzed.nitrogen || water !== analyzed.water;
   function submit(event: FormEvent) {
     event.preventDefault();
     if (ph.trim() === "" || !Number.isFinite(Number(ph)) || Number(ph) < 0 || Number(ph) > 14) { setError("Enter a soil pH between 0 and 14."); return; }
