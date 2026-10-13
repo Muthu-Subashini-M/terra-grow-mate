@@ -29,3 +29,17 @@ export function analyzeSoil(input: SoilInput) {
   ];
   return { crops: ranked, actions, labRequired };
 }
+
+export type SoilParams = Omit<SoilInput, "ph">;
+
+const phBase = 6.5;
+const phTextureShift: Record<Texture, number> = { Sandy: -0.5, Loam: 0, Clay: 0.2 };
+const phNitrogenShift: Record<Level, number> = { Low: -0.3, Medium: 0, High: 0.3 };
+const phWaterShift: Record<Level, number> = { Low: -0.4, Medium: 0, High: 0.2 };
+
+export function recommendPh(params: SoilParams) {
+  const raw = phBase + phTextureShift[params.texture] + phNitrogenShift[params.nitrogen] + phWaterShift[params.water];
+  const targetPh = Math.round(Math.min(7.5, Math.max(5.5, raw)) * 10) / 10;
+  const detail = `A target of pH ${targetPh.toFixed(1)} suits ${params.texture.toLowerCase()} soil with ${params.nitrogen.toLowerCase()} nitrogen and ${params.water.toLowerCase()} water availability.`;
+  return { targetPh, detail };
+}
