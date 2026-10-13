@@ -5,7 +5,7 @@ describe("preliminary soil analysis", () => {
   it("returns three ranked crop recommendations for sample soil", () => {
     const result = analyzeSoil(sampleSoil);
     expect(result.crops).toHaveLength(3);
-    expect(result.crops[0].name).toBe("Soybean");
+    expect(result.crops[0]?.name).toBe("Soybean");
     expect(result.labRequired).toBe(false);
   });
   it("flags acidic soil for laboratory testing", () => {
@@ -22,7 +22,7 @@ describe("preliminary soil analysis", () => {
   });
   it("adjusts recommendations when water availability changes", () => {
     const result = analyzeSoil({ ph: 7.8, texture: "Sandy", nitrogen: "Low", water: "Low" });
-    expect(result.crops[0].name).toBe("Sorghum");
-    expect(result.actions[2].title).toBe("Conserve available moisture");
+    expect(result.crops[0]?.name).toBe("Sorghum");
+    expect(result.actions[2]?.title).toBe("Conserve available moisture");
   });
 });

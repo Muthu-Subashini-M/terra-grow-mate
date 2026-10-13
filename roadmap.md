@@ -1,4 +1,4 @@
 # Terraform
-- [ ] Create the soil dashboard and design system.
-- [ ] Implement preliminary crop recommendations and lab status.
-- [ ] Test the analysis flow and mobile layout.
+- [x] Create the soil dashboard and design system.
+- [x] Implement preliminary crop recommendations and lab status.
+- [x] Test the analysis flow and mobile layout.
