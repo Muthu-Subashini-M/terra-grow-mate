@@ -92,6 +92,13 @@
 .field-control { width: 100%; height: 43px; border: 1px solid var(--border); border-radius: 6px; padding: 0 13px; background: var(--card); outline: none; box-shadow: none; }
 .field-control:focus { border-color: var(--primary); }
 .field-hint { margin-top: 7px; font-size: 11px; color: var(--muted-foreground); }
+.field-label-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 9px; }
+.field-label-row label { margin-bottom: 0; }
+.calc-btn { height: 28px; padding: 0 10px; font-size: 11px; font-weight: 600; border-radius: 6px; background: var(--accent); color: var(--primary); box-shadow: none; }
+.calc-btn:hover { background: var(--success-soft); }
+.calc-btn > svg { width: 14px; height: 14px; }
+.field-note { display: flex; gap: 6px; align-items: flex-start; margin-top: 8px; padding: 8px 10px; border-radius: 6px; background: var(--accent); color: var(--primary); font-size: 11px; line-height: 1.55; }
+.field-note > svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 2px; }
 .ph-scale { height: 5px; border-radius: 5px; margin-top: 13px; background: linear-gradient(90deg,oklch(0.75 0.12 50),oklch(0.85 0.11 95),oklch(0.68 0.09 150),oklch(0.73 0.08 225)); }
 .ph-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted-foreground); margin-top: 5px; }
 .form-actions { border-top: 1px solid var(--border); margin-top: 26px; padding-top: 21px; }
