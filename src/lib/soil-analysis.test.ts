@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { analyzeSoil, sampleSoil } from "./soil-analysis";
+import { analyzeSoil, recommendPh, sampleSoil } from "./soil-analysis";
 
 describe("preliminary soil analysis", () => {
   it("returns three ranked crop recommendations for sample soil", () => {
