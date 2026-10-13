@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { ArrowRight, Bean, Check, CheckCheck, ChevronRight, CircleCheck, Droplets, FlaskConical, Info, Leaf, RotateCcw, ShieldCheck, SlidersHorizontal, Sprout, TestTubeDiagonal, Wheat } from "lucide-react";
+import { ArrowRight, Bean, Calculator, Check, CheckCheck, ChevronRight, CircleCheck, Droplets, FlaskConical, Info, Leaf, RotateCcw, ShieldCheck, SlidersHorizontal, Sprout, TestTubeDiagonal, Wheat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { analyzeSoil, sampleSoil, type SoilInput, type Level, type Texture } from "@/lib/soil-analysis";
+import { analyzeSoil, recommendPh, sampleSoil, type SoilInput, type Level, type Texture } from "@/lib/soil-analysis";
 import farmland from "@/assets/farmland.jpg";
 
 export const Route = createFileRoute("/")({
@@ -30,14 +30,16 @@ function Index() {
   const [analyzed, setAnalyzed] = useState<SoilInput>(sampleSoil);
   const [revision, setRevision] = useState(0);
   const [error, setError] = useState("");
+  const [phNote, setPhNote] = useState("");
   const result = analyzeSoil(analyzed);
   const changed = ph !== String(analyzed.ph) || texture !== analyzed.texture || nitrogen !== analyzed.nitrogen || water !== analyzed.water;
   function submit(event: FormEvent) {
     event.preventDefault();
     if (ph.trim() === "" || !Number.isFinite(Number(ph)) || Number(ph) < 0 || Number(ph) > 14) { setError("Enter a soil pH between 0 and 14."); return; }
-    setError(""); setAnalyzed({ ph: Number(ph), texture, nitrogen, water }); setRevision(value => value + 1);
+    setError(""); setPhNote(""); setAnalyzed({ ph: Number(ph), texture, nitrogen, water }); setRevision(value => value + 1);
   }
-  function reset() { setPh("6.5"); setTexture("Loam"); setNitrogen("Medium"); setWater("Medium"); setAnalyzed(sampleSoil); setError(""); setRevision(value => value + 1); }
+  function calculatePh() { const { targetPh, detail } = recommendPh({ texture, nitrogen, water }); setPh(targetPh.toFixed(1)); setPhNote(detail); setError(""); }
+  function reset() { setPh("6.5"); setTexture("Loam"); setNitrogen("Medium"); setWater("Medium"); setAnalyzed(sampleSoil); setError(""); setPhNote(""); setRevision(value => value + 1); }
   return <div className="min-h-screen">
     <header className="app-header"><div className="header-inner"><div className="flex items-center"><a href="/" className="brand" aria-label="Terraform home"><Sprout className="brand-icon" strokeWidth={2.1} />terraform<span className="text-primary">.</span></a><span className="header-label">Soil & agriculture management</span></div><div className="flex items-center gap-3"><span className="text-xs text-muted-foreground hidden sm:inline">Grow with confidence</span><span className="flex size-9 items-center justify-center rounded-full bg-accent text-primary"><Leaf size={17} /></span></div></div></header>
     <main className="workspace">
@@ -47,7 +49,7 @@ function Index() {
       <div className="analysis-grid">
         <section className="panel"><div className="panel-heading"><div><div className="heading-title"><SlidersHorizontal /><h2>Soil parameters</h2></div><p>A closer look at what’s beneath the surface.</p></div><Button variant="ghost" size="icon" title="Reset soil parameters" aria-label="Reset soil parameters" onClick={reset}><RotateCcw className="text-muted-foreground" /></Button></div>
           <form className="soil-form" onSubmit={submit} noValidate>
-            <div className="field"><label htmlFor="soil-ph"><TestTubeDiagonal />Soil pH</label><input id="soil-ph" className="field-control" type="number" min="0" max="14" step="0.1" value={ph} onChange={event => { setPh(event.target.value); setError(""); }} aria-invalid={!!error} aria-describedby="ph-hint" required /><div className="ph-scale" /><div className="ph-labels"><span>Acidic</span><span>Neutral</span><span>Alkaline</span></div><p id="ph-hint" className="field-hint">Most crops thrive between pH 6.0 and 7.0.</p>{error && <p role="alert" className="mt-2 text-xs text-destructive">{error}</p>}</div>
+            <div className="field"><div className="field-label-row"><label htmlFor="soil-ph"><TestTubeDiagonal />Soil pH</label><Button type="button" variant="secondary" size="sm" className="calc-btn" onClick={calculatePh} title="Calculate a target pH from your soil texture, nitrogen, and water inputs"><Calculator />Calculate pH</Button></div><input id="soil-ph" className="field-control" type="number" min="0" max="14" step="0.1" value={ph} onChange={event => { setPh(event.target.value); setError(""); setPhNote(""); }} aria-invalid={!!error} aria-describedby="ph-hint" required /><div className="ph-scale" /><div className="ph-labels"><span>Acidic</span><span>Neutral</span><span>Alkaline</span></div><p id="ph-hint" className="field-hint">Most crops thrive between pH 6.0 and 7.0.</p>{phNote && <p className="field-note"><CircleCheck size={12} />{phNote}</p>}{error && <p role="alert" className="mt-2 text-xs text-destructive">{error}</p>}</div>
             <SoilSelect id="soil-texture" label="Soil texture" icon={Leaf} value={texture} options={["Sandy", "Clay", "Loam"]} onChange={value => setTexture(value as Texture)} />
             <SoilSelect id="nitrogen" label="Nitrogen level" icon={FlaskConical} value={nitrogen} options={["Low", "Medium", "High"]} onChange={value => setNitrogen(value as Level)} />
             <SoilSelect id="water" label="Water availability" icon={Droplets} value={water} options={["Low", "Medium", "High"]} onChange={value => setWater(value as Level)} />
